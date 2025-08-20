@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
@@ -10,13 +11,13 @@ import ru.practicum.shareit.user.model.User;
 import java.util.HashMap;
 
 @Slf4j
-@Repository
+@Component
 @RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
 
     private Long sequenceTask = 0L;
 
-    HashMap<Long, User> users = new HashMap<>();
+    private final HashMap<Long, User> users = new HashMap<>();
 
     protected Long getSequence() {
         sequenceTask++;

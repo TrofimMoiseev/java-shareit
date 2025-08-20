@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
+@Component
 @RequiredArgsConstructor
 public class InMemoryItemStorage implements ItemStorage {
 
