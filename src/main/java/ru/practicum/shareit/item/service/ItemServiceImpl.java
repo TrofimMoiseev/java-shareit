@@ -3,14 +3,11 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ConditionsNotMetException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemStorage;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserStorage;
 
 import java.util.List;
@@ -25,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAll(Long userId) {
-        if(userStorage.checkId(userId)) {
+        if (userStorage.checkId(userId)) {
         throw new NotFoundException("Пользователя не существует");
         }
 
@@ -34,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto get(Long itemId) {
-        if(itemStorage.checkId(itemId)) {
+        if (itemStorage.checkId(itemId)) {
             throw new NotFoundException("Предмет не найден");
         }
 
@@ -51,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto post(Long userId, ItemDto itemDto) {
-        if(userStorage.checkId(userId)) {
+        if (userStorage.checkId(userId)) {
             throw new NotFoundException("Пользователя не существует");
         }
         log.info("Обработка POST-запроса на добавление предмета {}.", itemDto);
@@ -60,13 +57,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto put(Long userId, Long itemId, ItemDto itemDto) {
-        if(itemStorage.checkId(itemId)) {
+        if (itemStorage.checkId(itemId)) {
             throw new NotFoundException("Предмет не найден");
         }
 
         Item newItem = itemStorage.get(itemId);
 
-        if(!newItem.getOwnerId().equals(userId)) {
+        if (!newItem.getOwnerId().equals(userId)) {
             throw new NotFoundException("Вы не являетесь владельцем предмета");
         }
 
