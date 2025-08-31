@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.ConditionsNotMetException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -34,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> findAllByOwnerId(Long userId) {
-        if (userRepository.existsById(userId)) {
+        if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователя не существует");
         }
 
@@ -113,7 +114,7 @@ public class ItemServiceImpl implements ItemService {
         if (!bookingRepository.existsPastBookingExcludingRejected(userId,
                 itemId,
                 LocalDateTime.now())) {
-            throw new ValidationException("Нужно создать бронирование, только потом комментарий");
+            throw new ConditionsNotMetException("Нужно создать бронирование, только потом комментарий");
         }
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
