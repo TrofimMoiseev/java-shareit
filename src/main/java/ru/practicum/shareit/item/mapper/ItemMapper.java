@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
-    public static ItemDto mapToItemDto(Item item) {
+    public static ItemDto toItemDto(Item item) {
         return new ItemDto(
                 item.getId(),
                 item.getName(),
@@ -40,7 +40,7 @@ public class ItemMapper {
 
     public static Collection<ItemDto> mapToItemDtoList(Collection<Item> search) {
         return search.stream()
-                .map(ItemMapper::mapToItemDto)
+                .map(ItemMapper::toItemDto)
                 .toList();
     }
 }
