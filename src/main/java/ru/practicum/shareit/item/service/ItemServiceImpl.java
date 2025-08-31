@@ -70,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователя не существует");
         }
-        item.setId(userId);
+        item.setOwnerId(userId);
         Item newItem = itemRepository.save(new Item());
 
         log.info("Обработка POST-запроса на добавление предмета {}.", item);
