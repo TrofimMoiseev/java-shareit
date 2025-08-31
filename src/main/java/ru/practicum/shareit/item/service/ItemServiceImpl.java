@@ -71,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Пользователя не существует");
         }
         item.setOwnerId(userId);
-        Item newItem = itemRepository.save(new Item());
+        Item newItem = itemRepository.save(item);
 
         log.info("Обработка POST-запроса на добавление предмета {}.", item);
         return ItemMapper.toItemDto(newItem);
