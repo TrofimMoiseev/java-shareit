@@ -25,7 +25,7 @@ public class ItemMapper {
         );
     }
 
-    public static ItemDto mapToItemDtoWithBookings(Item item,
+    public static ItemDto toItemDtoWithComments(Item item,
                                                    List<CommentDto> comments) {
         return new ItemDto(
                 item.getId(),

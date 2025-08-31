@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Slf4j
@@ -47,9 +48,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto findById(Long itemId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Предмет не найден"));
-
-        return ItemMapper.toItemDto(item);
+                .orElseThrow(() -> new NotFoundException("Вещь с заданным ID не найдена"));
+        Collection<Comment> comments = commentRepository.findAllByItemId(itemId);
+        return ItemMapper.toItemDtoWithComments(item, CommentMapper.mapCommentToDtoList(comments));
     }
 
     @Override
