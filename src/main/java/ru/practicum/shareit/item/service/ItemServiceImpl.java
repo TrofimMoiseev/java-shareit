@@ -80,28 +80,25 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto update(Long userId, Long itemId, ItemUpdateDto item) {
+    public ItemDto update(Long userId, Long itemId, Item item) {
 
-        Item newItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Предмет не найден"));
-
-        if (!newItem.getOwnerId().equals(userId)) {
-            throw new NotFoundException("Вы не являетесь владельцем предмета");
+        Item updItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Вещь с заданным ID не найдена"));
+        if (!updItem.getOwnerId().equals(userId)) {
+            throw new NotFoundException("Вносить изменения в поля может только владелец");
         }
-
-        if (item.getName() != null && !item.getName().isBlank()) {
-            newItem.setName(item.getName());
+        if (item.getName() != null) {
+            updItem.setName(item.getName());
         }
-
-        if (item.getDescription() != null && !item.getDescription().isBlank()) {
-            newItem.setDescription(item.getDescription());
+        if (item.getDescription() != null) {
+            updItem.setDescription(item.getDescription());
         }
-
         if (item.getAvailable() != null) {
-            newItem.setAvailable(item.getAvailable());
+            updItem.setAvailable(item.getAvailable());
         }
+        itemRepository.save(updItem);
 
-        return ItemMapper.toItemDto(itemRepository.save(newItem));
+        return ItemMapper.toItemDto(updItem);
     }
 
     @Transactional

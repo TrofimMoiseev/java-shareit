@@ -44,8 +44,8 @@ public class ItemController {
     @PatchMapping ("/{itemId}")
     public ItemDto update(@RequestHeader("X-Sharer-User-Id") Long userId,
                        @PathVariable Long itemId,
-                       @RequestBody ItemUpdateDto itemUpdateDto) {
-        return itemService.update(userId, itemId, itemUpdateDto);
+                       @RequestBody Item item) {
+        return itemService.update(userId, itemId, item);
     }
 
     @PostMapping("{itemId}/comment")
