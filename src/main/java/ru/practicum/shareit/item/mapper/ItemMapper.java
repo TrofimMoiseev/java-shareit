@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.List;
+
 @UtilityClass
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
@@ -11,7 +13,10 @@ public class ItemMapper {
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getAvailable()
+                item.getAvailable(),
+                null,
+                null,
+                List.of()
         );
     }
 }
