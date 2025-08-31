@@ -13,12 +13,4 @@ public class UserMapper {
                     user.getEmail()
             );
         }
-
-        public static User toUser(Long userId, UserDto userDto) {
-            return new User(
-                    userId,
-                    userDto.getName(),
-                    userDto.getEmail()
-            );
-        }
 }

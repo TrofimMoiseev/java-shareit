@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 
@@ -18,22 +19,22 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{userId}")
-    public UserDto get(@PathVariable Long userId) {
+    public UserDto findById(@PathVariable Long userId) {
         log.info("Получен GET-запроса на получение пользователя по id {}.", userId);
-        return userService.get(userId);
+        return userService.findById(userId);
     }
 
     @PostMapping
-    public UserDto post(@RequestBody @Valid UserDto userDto) {
-        log.info("Получен POST-запроса на добавление пользователя {}.", userDto);
-        return userService.post(userDto);
+    public UserDto save(@RequestBody @Valid User user) {
+        log.info("Получен POST-запроса на добавление пользователя {}.", user);
+        return userService.save(user);
     }
 
     @PatchMapping("/{userId}")
-    public UserDto put(@PathVariable Long userId,
-    @RequestBody UserDto userDto) {
-        log.info("Получен PATH-запроса на обновление пользователя {} {}.", userId, userDto);
-        return userService.put(userId, userDto);
+    public UserDto update(@PathVariable Long userId,
+    @RequestBody User user) {
+        log.info("Получен PATH-запроса на обновление пользователя {} {}.", userId, user);
+        return userService.update(userId, user);
     }
 
     @DeleteMapping("/{userId}")

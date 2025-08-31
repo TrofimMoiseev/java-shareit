@@ -4,63 +4,53 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
 
     @Override
-    public UserDto get(Long userId) {
-        if (userStorage.checkId(userId)) {
-            throw new NotFoundException("Пользователь не найден");
-        }
+    public UserDto findById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException("Пользователь не найден"));
         log.info("Обработка GET-запроса на получение пользователя по id {}.", userId);
-        return UserMapper.toUserDto(userStorage.get(userId));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto post(UserDto userDto) {
-        if (userStorage.checkEmail(userDto.getEmail())) {
-            throw new ValidationException("Данный email уже используется");
-        }
-        log.info("Обработка POST-запроса на добавление пользователя {}.", userDto);
-        return UserMapper.toUserDto(userStorage.post(userDto));
+    public UserDto save(User user) {
+        User newUser = userRepository.save(user);
+        log.info("Обработка POST-запроса на добавление пользователя {}.", user);
+        return UserMapper.toUserDto(newUser);
     }
 
     @Override
-    public UserDto put(Long userId, UserDto userDto) {
-        if (userStorage.checkId(userId)) {
-            throw new NotFoundException("Пользователь не найден");
+    public UserDto update(Long userId, User user) {
+
+        User newUser = userRepository.findById(userId)
+                .orElseThrow(()-> new NotFoundException("Пользователь не найден"));
+
+        if (user.getName() != null && !user.getName().isBlank()) {
+            newUser.setName(user.getName());
         }
 
-        User newUser = userStorage.get(userId);
-
-        if (userDto.getName() != null && !userDto.getName().isBlank()) {
-            newUser.setName(userDto.getName());
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            newUser.setEmail(user.getEmail());
         }
-
-        if (userDto.getEmail() != null && !userDto.getEmail().isBlank()
-                && userDto.getEmail().contains("@")) {
-            if (userStorage.checkEmail(userDto.getEmail())) {
-                throw new ValidationException("Данный email уже используется");
-            }
-            newUser.setEmail(userDto.getEmail());
-        }
-        log.info("Обработка PATH-запроса на обновление пользователя {} {}.", userId, userDto);
-        return UserMapper.toUserDto(userStorage.put(userId, newUser));
+        userRepository.save(newUser);
+        log.info("Обработка PATH-запроса на обновление пользователя {} {}.", userId, newUser);
+        return UserMapper.toUserDto(newUser);
     }
 
     @Override
     public void delete(Long userId) {
         log.info("Обработка DELETE-запроса на удаление пользователя {} .", userId);
-        userStorage.delete(userId);
+        userRepository.deleteById(userId);
     }
 }
