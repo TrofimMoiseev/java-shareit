@@ -67,7 +67,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto save(Long userId, Item item) {
-        if (userRepository.existsById(userId)) {
+        if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователя не существует");
         }
         item.setId(userId);

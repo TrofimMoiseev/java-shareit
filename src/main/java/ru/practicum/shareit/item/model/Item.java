@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import ru.practicum.shareit.request.ItemRequest;
 
 @Getter
@@ -30,5 +31,8 @@ public class Item {
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    @ToString.Exclude
     private ItemRequest request;
     }

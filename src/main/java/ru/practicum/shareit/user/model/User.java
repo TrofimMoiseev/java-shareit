@@ -19,5 +19,5 @@ public class User {
 
     @Column(nullable = false, unique = true)
     @Email(message = "Неверный формат электронной почты")
-    private String email;;
+    private String email;
 }

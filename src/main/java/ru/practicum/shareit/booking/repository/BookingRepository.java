@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-public interface BookingRepository extends JpaRepository <Booking, Long> {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findAllByItemOwnerIdOrderByStatusAscStartAsc(Long ownerId);
 
     Collection<Booking> findByBookerIdOrderByStartDesc(Long userId);

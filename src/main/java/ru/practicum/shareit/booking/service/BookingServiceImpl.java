@@ -23,7 +23,7 @@ import java.util.Collection;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BookingServiceImpl implements BookingService{
+public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
