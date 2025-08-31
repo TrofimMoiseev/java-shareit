@@ -78,7 +78,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
     public ItemDto update(Long userId, Long itemId, Item item) {
 
         Item updItem = itemRepository.findById(itemId)
