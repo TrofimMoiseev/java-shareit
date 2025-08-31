@@ -78,7 +78,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(Long userId, Long itemId, Item item) {
+    @Transactional
+    public ItemDto update(Long userId, Long itemId, ItemDto item) {
 
         Item updItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с заданным ID не найдена"));
