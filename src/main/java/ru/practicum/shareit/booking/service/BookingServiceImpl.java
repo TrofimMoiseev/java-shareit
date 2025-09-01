@@ -126,12 +126,12 @@ public class BookingServiceImpl implements BookingService {
             BookerState bookerState = BookerState.valueOf(state.toUpperCase());
             LocalDateTime now = LocalDateTime.now();
             bookings = switch (bookerState) {
-                case ALL -> bookingRepository.findByItem_Owner_Id(ownerId, newestFirst);
-                case CURRENT -> bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(ownerId, now, now, newestFirst);
-                case PAST -> bookingRepository.findByItem_Owner_IdAndEndIsBefore(ownerId, now, newestFirst);
-                case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartAfter(ownerId, now, newestFirst);
-                case WAITING -> bookingRepository.findByItem_Owner_IdAndStatus(ownerId, Status.WAITING, newestFirst);
-                case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatus(ownerId, Status.REJECTED, newestFirst);
+                case ALL -> bookingRepository.findByItem_OwnerId(ownerId, newestFirst);
+                case CURRENT -> bookingRepository.findByItem_OwnerIdAndStartBeforeAndEndAfter(ownerId, now, now, newestFirst);
+                case PAST -> bookingRepository.findByItem_OwnerIdAndEndIsBefore(ownerId, now, newestFirst);
+                case FUTURE -> bookingRepository.findByItem_OwnerIdAndStartAfter(ownerId, now, newestFirst);
+                case WAITING -> bookingRepository.findByItem_OwnerIdAndStatus(ownerId, Status.WAITING, newestFirst);
+                case REJECTED -> bookingRepository.findByItem_OwnerIdAndStatus(ownerId, Status.REJECTED, newestFirst);
             };
             return BookingMapper.toBookingDtoList(bookings);
         } catch (IllegalArgumentException e) {

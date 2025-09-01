@@ -29,15 +29,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByBookerIdAndStatus(Long userId, Status status, Sort sort);
 
-    List<Booking> findByItem_Owner_Id(Long ownerId, Sort sort);
+    List<Booking> findByItem_OwnerId(Long ownerId, Sort sort);
 
-    List<Booking> findByItem_Owner_IdAndStartBeforeAndEndAfter(Long ownerId, LocalDateTime now, LocalDateTime now1, Sort sort);
+    List<Booking> findByItem_OwnerIdAndStartBeforeAndEndAfter(Long ownerId, LocalDateTime now, LocalDateTime now1, Sort sort);
 
-    List<Booking> findByItem_Owner_IdAndEndIsBefore(Long ownerId, LocalDateTime now, Sort sort);
+    List<Booking> findByItem_OwnerIdAndEndIsBefore(Long ownerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findByItem_Owner_IdAndStartAfter(Long ownerId, LocalDateTime now, Sort sort);
+    List<Booking> findByItem_OwnerIdAndStartAfter(Long ownerId, LocalDateTime now, Sort sort);
 
-    List<Booking> findByItem_Owner_IdAndStatus(Long ownerId, Status status, Sort sort);
+    List<Booking> findByItem_OwnerIdAndStatus(Long ownerId, Status status, Sort sort);
 
     @Query("SELECT COUNT(b) > 0 FROM Booking b " +
             "WHERE b.booker.id = :userId " +
