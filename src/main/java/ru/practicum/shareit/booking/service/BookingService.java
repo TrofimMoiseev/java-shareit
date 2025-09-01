@@ -15,5 +15,5 @@ public interface BookingService {
 
     Collection<BookingDto> findBookingByUserAndState(Long userId, String state);
 
-    Collection<BookingDto> findBookingByOwner(Long ownerId);
+    Collection<BookingDto> findBookingByOwner(Long ownerId, String state);
 }

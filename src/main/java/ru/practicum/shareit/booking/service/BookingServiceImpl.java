@@ -4,10 +4,12 @@ package ru.practicum.shareit.booking.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingRequest;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.BookerState;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -19,6 +21,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+
 
 @Slf4j
 @Service
@@ -48,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setEnd(request.getEnd());
         booking.setBooker(booker);
         booking.setStatus(Status.WAITING);
-        return BookingMapper.mapToBookingDto(bookingRepository.save(booking));
+        return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
     @Override
@@ -70,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
             } else {
                 booking.setStatus(Status.CANCELED);
             }
-            return BookingMapper.mapToBookingDto(bookingRepository.save(booking));
+            return BookingMapper.toBookingDto(bookingRepository.save(booking));
         } else {
             throw new RuntimeException("Подтвердить бронирование может только владелец вещи");
         }
@@ -81,7 +84,7 @@ public class BookingServiceImpl implements BookingService {
         if (userRepository.existsById(userId)) {
             Booking booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new NotFoundException("Бронирование по данному ID не найдено"));
-            return BookingMapper.mapToBookingDto(booking);
+            return BookingMapper.toBookingDto(booking);
         } else {
             throw new NotFoundException("Пользователь с данным ID не найден");
         }
@@ -89,22 +92,50 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Collection<BookingDto> findBookingByUserAndState(Long userId, String state) {
-        Collection<Booking> bookings;
-        LocalDateTime now = LocalDateTime.now();
-        bookings = switch (state) {
-            case "ALL" -> bookingRepository.findByBookerIdOrderByStartDesc(userId);
-            case "CURRENT" -> bookingRepository.findByBookerIdAndStartBeforeAndEndAfter(userId, now, now);
-            case "PAST" -> bookingRepository.findByBookerIdAndEndBefore(userId, now);
-            case "FUTURE" -> bookingRepository.findByBookerIdAndStartAfter(userId, now);
-            default -> throw new IllegalStateException("Неверный параметр state");
-        };
-
-        return BookingMapper.mapToBookingDtoList(bookings);
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("Пользователь с данным ID не найден");
+        }
+        try {
+            Collection<Booking> bookings;
+            Sort newestFirst = Sort.by(Sort.Direction.DESC, "start");
+            BookerState bookerState = BookerState.valueOf(state.toUpperCase());
+            LocalDateTime now = LocalDateTime.now();
+            bookings = switch (bookerState) {
+                case ALL -> bookingRepository.findByBookerId(userId, newestFirst);
+                case CURRENT ->
+                        bookingRepository.findByBookerIdAndStartBeforeAndEndAfter(userId, now, now, newestFirst);
+                case PAST -> bookingRepository.findByBookerIdAndEndBefore(userId, now, newestFirst);
+                case FUTURE -> bookingRepository.findByBookerIdAndStartAfter(userId, now, newestFirst);
+                case WAITING -> bookingRepository.findByBookerIdAndStatus(userId, Status.WAITING, newestFirst);
+                case REJECTED -> bookingRepository.findByBookerIdAndStatus(userId, Status.REJECTED, newestFirst);
+            };
+            return BookingMapper.toBookingDtoList(bookings);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Неверный параметр state: " + state);
+        }
     }
 
     @Override
-    public Collection<BookingDto> findBookingByOwner(Long ownerId) {
-        userRepository.findById(ownerId).orElseThrow(() -> new NotFoundException("Пользователь с данным ID не найден"));
-        return BookingMapper.mapToBookingDtoList(bookingRepository.findAllByItemOwnerIdOrderByStatusAscStartAsc(ownerId));
+    public Collection<BookingDto> findBookingByOwner(Long ownerId, String state) {
+        if (!userRepository.existsById(ownerId)) {
+            throw new NotFoundException("Пользователь с данным ID не найден");
+        }
+        try {
+            Collection<Booking> bookings;
+            Sort newestFirst = Sort.by(Sort.Direction.DESC, "start");
+            BookerState bookerState = BookerState.valueOf(state.toUpperCase());
+            LocalDateTime now = LocalDateTime.now();
+            bookings = switch (bookerState) {
+                case ALL -> bookingRepository.findByItem_Owner_Id(ownerId, newestFirst);
+                case CURRENT -> bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(ownerId, now, now, newestFirst);
+                case PAST -> bookingRepository.findByItem_Owner_IdAndEndIsBefore(ownerId, now, newestFirst);
+                case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartAfter(ownerId, now, newestFirst);
+                case WAITING -> bookingRepository.findByItem_Owner_IdAndStatus(ownerId, Status.WAITING, newestFirst);
+                case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatus(ownerId, Status.REJECTED, newestFirst);
+            };
+            return BookingMapper.toBookingDtoList(bookings);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Неверный параметр state: " + state);
+        }
     }
 }

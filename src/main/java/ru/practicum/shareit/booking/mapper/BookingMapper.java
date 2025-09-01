@@ -9,7 +9,7 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 import java.util.Collection;
 
 public class BookingMapper {
-    public static BookingDto mapToBookingDto(Booking booking) {
+    public static BookingDto toBookingDto(Booking booking) {
         return new BookingDto(booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
@@ -19,13 +19,13 @@ public class BookingMapper {
         );
     }
 
-    public static Collection<BookingDto> mapToBookingDtoList(Collection<Booking> bookings) {
+    public static Collection<BookingDto> toBookingDtoList(Collection<Booking> bookings) {
         return bookings.stream()
-                .map(BookingMapper::mapToBookingDto)
+                .map(BookingMapper::toBookingDto)
                 .toList();
     }
 
-    public static BookingShortDto mapToBookingShortDto(Booking booking) {
+    public static BookingShortDto toBookingShortDto(Booking booking) {
         return new BookingShortDto(
                 booking.getId(),
                 booking.getBooker().getId()

@@ -4,15 +4,19 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.ConditionsNotMetException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.item.model.CommentRequest;
+import ru.practicum.shareit.item.dto.CommentRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -22,6 +26,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,15 +39,37 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<ItemDto> findAllByOwnerId(Long userId) {
+    public List<ItemOwnerDto> findAllByOwnerId(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователя не существует");
         }
 
         return itemRepository.findAllByOwnerId(userId)
                 .stream()
-                .map(ItemMapper::toItemDto)
-                .toList();
+                .map(item -> {
+                    List<CommentDto> comments = commentRepository.findAllByItemId(item.getId())
+                            .stream()
+                            .map(CommentMapper::toCommentDto)
+                            .toList();
+
+                    Booking lastBooking = bookingRepository
+                            .findFirstByItemIdAndStartBeforeAndStatusOrderByEndDesc(
+                                    item.getId(), LocalDateTime.now(), Status.APPROVED
+                            );
+
+                    Booking nextBooking = bookingRepository
+                            .findFirstByItemIdAndStartAfterAndStatusOrderByStartAsc(
+                                    item.getId(), LocalDateTime.now(), Status.APPROVED
+                            );
+                    return ItemMapper.toItemDtoForOwner(
+                            item,
+                            BookingMapper.toBookingShortDto(lastBooking),
+                            BookingMapper.toBookingShortDto(nextBooking),
+                            comments
+                    );
+                })
+                .collect(Collectors.toList());
+
     }
 
     @Override
