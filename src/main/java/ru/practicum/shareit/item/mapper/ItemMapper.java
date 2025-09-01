@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
@@ -14,11 +13,11 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
 
-    public static ItemOwnerDto toItemDtoForOwner(Item item,
+    public static ItemDto toItemDtoForOwner(Item item,
                                                  BookingShortDto lastBooking,
                                                  BookingShortDto nextBooking,
                                                  List<CommentDto> comments) {
-        return new ItemOwnerDto(
+        return new ItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
@@ -35,6 +34,8 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
+                null,
+                null,
                 List.of()
         );
     }
@@ -46,6 +47,8 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
+                null,
+                null,
                 comments != null ? comments : List.of()
         );
     }

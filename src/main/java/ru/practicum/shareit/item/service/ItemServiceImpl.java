@@ -12,7 +12,6 @@ import ru.practicum.shareit.exception.ConditionsNotMetException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -39,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<ItemOwnerDto> findAllByOwnerId(Long userId) {
+    public List<ItemDto> findAllByOwnerId(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователя не существует");
         }
