@@ -22,8 +22,8 @@ public class ItemRequestController {
 
         @PostMapping
         public ItemRequestDto addRequest(@RequestHeader(USER_ID_HEADER) Long userId,
-                                         @RequestBody ItemRequestCreateDto itemRequestCreateDto) {
-            return itemRequestService.addNewRequest(userId, itemRequestCreateDto);
+                                         @RequestBody ItemRequestCreateDto dto) {
+            return itemRequestService.addNewRequest(userId, dto);
         }
 
         @GetMapping

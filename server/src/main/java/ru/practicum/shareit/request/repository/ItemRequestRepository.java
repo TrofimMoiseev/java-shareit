@@ -17,7 +17,5 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
             WHERE i.requester.id <> :userId
             """)
     Page<ItemRequest> findOtherUsersRequests(@Param("userId") Long userId, Pageable pageable);
-
-    boolean existsByIdAndRequesterId(Long requestId, Long userId);
 }
 

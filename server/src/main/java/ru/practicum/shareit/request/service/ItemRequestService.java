@@ -10,7 +10,7 @@ import java.util.Collection;
 
 public interface ItemRequestService {
 
-    ItemRequestDto addNewRequest(Long userId, ItemRequestCreateDto itemRequestCreateDto);
+    ItemRequestDto addNewRequest(Long userId, ItemRequestCreateDto dto);
 
     Collection<ItemRequestDto> findAllRequestsByUserId(Long userId);
 
