@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -22,8 +23,8 @@ public class ItemRequestController {
 
         @PostMapping
         public ItemRequestDto addRequest(@RequestHeader(USER_ID_HEADER) Long userId,
-                                         @RequestBody ItemRequest itemRequest) {
-            return itemRequestService.addNewRequest(userId, itemRequest);
+                                         @RequestBody ItemRequestCreateDto itemRequestCreateDto) {
+            return itemRequestService.addNewRequest(userId, itemRequestCreateDto);
         }
 
         @GetMapping
