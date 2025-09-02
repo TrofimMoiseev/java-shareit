@@ -15,9 +15,9 @@ import java.util.List;
 public class ItemMapper {
 
     public static ItemDto toItemDtoForOwner(Item item,
-                                                 BookingShortDto lastBooking,
-                                                 BookingShortDto nextBooking,
-                                                 List<CommentDto> comments) {
+                                            BookingShortDto lastBooking,
+                                            BookingShortDto nextBooking,
+                                            List<CommentDto> comments) {
         return new ItemDto(
                 item.getId(),
                 item.getName(),
