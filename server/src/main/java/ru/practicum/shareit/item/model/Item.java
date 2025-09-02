@@ -3,8 +3,6 @@ package ru.practicum.shareit.item.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import ru.practicum.shareit.request.model.ItemRequest;
 
 @Getter
 @Setter
@@ -28,8 +26,6 @@ public class Item {
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id")
-    @ToString.Exclude
-    private ItemRequest request;
+    @Column(name = "request_id")
+    private Long requestId;
     }
