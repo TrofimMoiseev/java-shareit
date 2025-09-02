@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
@@ -17,7 +16,6 @@ import ru.practicum.shareit.booking.dto.BookingState;
 @Controller
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
-@Slf4j
 @Validated
 public class BookingController {
     private final BookingClient bookingClient;
@@ -26,7 +24,6 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> bookItem(@Positive @RequestHeader(USER_ID_HEADER) long userId,
                                            @RequestBody @Valid BookItemRequestDto requestDto) {
-        log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
     }
 
@@ -34,14 +31,12 @@ public class BookingController {
     public ResponseEntity<Object> approveBooking(@Positive @RequestHeader(USER_ID_HEADER) long userId,
                                                  @Positive @PathVariable long bookingId,
                                                  @RequestParam(name = "approved") Boolean approved) {
-        log.info("Approving booking {}, userId={}", bookingId, userId);
         return bookingClient.approveBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getBooking(@Positive @RequestHeader(USER_ID_HEADER) long userId,
                                              @PathVariable Long bookingId) {
-        log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
     }
 
@@ -52,7 +47,6 @@ public class BookingController {
                                               @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getBookings(userId, state, from, size);
     }
 

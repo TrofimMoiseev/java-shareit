@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +16,6 @@ import java.util.Collections;
 @Controller
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
-@Slf4j
 @Validated
 public class ItemController {
     private final ItemClient itemClient;
@@ -25,14 +23,12 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getItemsByUser(@Positive @RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Get all items by user id: {}", userId);
         return itemClient.getItemsByUser(userId);
     }
 
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItemByUser(@Positive @PathVariable long itemId,
                                                 @Positive @RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Get item by user id ({}) and item id ({})", userId, itemId);
         return itemClient.getItemByUser(userId, itemId);
     }
 
@@ -42,14 +38,12 @@ public class ItemController {
         if (text == null || text.isBlank()) {
             return ResponseEntity.ok(Collections.emptyList());
         }
-        log.info("Looking for items on request: {}", text);
         return itemClient.searchItems(userId, text);
     }
 
     @PostMapping
     public ResponseEntity<Object> createItem(@Positive @RequestHeader(USER_ID_HEADER) long userId,
                                              @Valid @RequestBody ItemDto dto) {
-        log.info("Create new item: {}", dto);
         return itemClient.createItem(userId, dto);
     }
 
@@ -57,14 +51,12 @@ public class ItemController {
     public ResponseEntity<Object> updateItem(@Positive @RequestHeader(USER_ID_HEADER) long userId,
                                              @Positive @PathVariable long itemId,
                                              @Valid @RequestBody UpdItemDto updItemDto) {
-        log.info("Update item (id {})", itemId);
         return itemClient.updateItem(userId, itemId, updItemDto);
     }
 
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Object> deleteItem(@Positive @RequestHeader(USER_ID_HEADER) long userId,
                                              @Positive @PathVariable long itemId) {
-        log.info("Delete item (id {})", itemId);
         return itemClient.deleteItem(userId, itemId);
     }
 
@@ -72,7 +64,6 @@ public class ItemController {
     public ResponseEntity<Object> addComment(@Positive @RequestHeader(USER_ID_HEADER) long userId,
                                              @Positive @PathVariable long itemId,
                                              @Valid @RequestBody CommentDto commentDto) {
-        log.info("Add comment ({}) to item (id {})", commentDto.getText(), itemId);
         return itemClient.addComment(userId, itemId, commentDto);
     }
 }
