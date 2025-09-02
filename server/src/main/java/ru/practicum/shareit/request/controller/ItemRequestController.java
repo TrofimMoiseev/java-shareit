@@ -17,24 +17,23 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
-        private static final String USER_ID_HEADER = "X-Sharer-User-Id";
         private final ItemRequestService itemRequestService;
 
         @PostMapping
-        public ItemRequestDto addRequest(@RequestHeader(USER_ID_HEADER) Long userId,
+        public ItemRequestDto addRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
                                          @RequestBody ItemRequestCreateDto dto) {
             return itemRequestService.addNewRequest(userId, dto);
         }
 
         @GetMapping
-        public Collection<ItemRequestDto> findAllRequestsByUserId(@RequestHeader(USER_ID_HEADER) Long userId) {
+        public Collection<ItemRequestDto> findAllRequestsByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
             return itemRequestService.findAllRequestsByUserId(userId);
         }
 
 
         @GetMapping("/all")
         public Collection<ItemRequestDto> findAllRequestsByOtherUsers(
-                @RequestHeader(USER_ID_HEADER) Long userId,
+                @RequestHeader("X-Sharer-User-Id") Long userId,
                 @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageable) {
             return itemRequestService.findAllRequestsByOtherUsers(userId, pageable)
                     .stream()
