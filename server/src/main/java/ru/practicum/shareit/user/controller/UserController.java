@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto save(@RequestBody @Valid User user) {
+    public UserDto save(@RequestBody  User user) {
         log.info("Получен POST-запроса на добавление пользователя {}.", user);
         return userService.save(user);
     }

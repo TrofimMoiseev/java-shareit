@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +17,5 @@ public class User {
     private String name;
 
     @Column(nullable = false, unique = true)
-    @Email(message = "Неверный формат электронной почты")
     private String email;
 }
