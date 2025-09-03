@@ -21,6 +21,8 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static ru.practicum.shareit.booking.model.BookerState.ALL;
+import static ru.practicum.shareit.booking.model.BookerState.WAITING;
 
 class BookingServiceImplTest {
 
@@ -182,7 +184,7 @@ class BookingServiceImplTest {
         when(bookingRepository.findByBookerId(eq(userId), any())).thenReturn(bookings);
         bookingMapperMock.when(() -> BookingMapper.toBookingDtoList(bookings)).thenReturn(List.of(bookingDto));
 
-        Collection<BookingDto> result = bookingService.findBookingByUserAndState(userId, "ALL");
+        Collection<BookingDto> result = bookingService.findBookingByUserAndState(userId, ALL);
 
         assertEquals(1, result.size());
     }
@@ -195,18 +197,8 @@ class BookingServiceImplTest {
                 .thenReturn(bookings);
         bookingMapperMock.when(() -> BookingMapper.toBookingDtoList(bookings)).thenReturn(List.of(bookingDto));
 
-        Collection<BookingDto> result = bookingService.findBookingByOwner(userId, "WAITING");
+        Collection<BookingDto> result = bookingService.findBookingByOwner(userId, WAITING);
 
         assertEquals(1, result.size());
-    }
-
-    @Test
-    void findBookingByOwner_shouldThrowForInvalidState() {
-        when(userRepository.existsById(userId)).thenReturn(true);
-
-        IllegalStateException ex = assertThrows(IllegalStateException.class,
-                () -> bookingService.findBookingByOwner(userId, "INVALID"));
-
-        assertTrue(ex.getMessage().contains("Неверный параметр state"));
     }
 }

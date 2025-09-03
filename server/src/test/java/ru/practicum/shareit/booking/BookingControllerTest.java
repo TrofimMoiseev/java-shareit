@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.practicum.shareit.booking.model.BookerState.ALL;
 
 @WebMvcTest(BookingController.class)
 class BookingControllerTest {
@@ -85,7 +86,7 @@ class BookingControllerTest {
         BookingDto dto = new BookingDto();
         dto.setId(bookingId);
 
-        Mockito.when(bookingService.findBookingByUserAndState(userId, "ALL"))
+        Mockito.when(bookingService.findBookingByUserAndState(userId, ALL))
                 .thenReturn(List.of(dto));
 
         mockMvc.perform(get("/bookings")
@@ -100,7 +101,7 @@ class BookingControllerTest {
         BookingDto dto = new BookingDto();
         dto.setId(bookingId);
 
-        Mockito.when(bookingService.findBookingByOwner(userId, "ALL"))
+        Mockito.when(bookingService.findBookingByOwner(userId, ALL))
                 .thenReturn(List.of(dto));
 
         mockMvc.perform(get("/bookings/owner")

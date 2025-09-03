@@ -91,16 +91,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Collection<BookingDto> findBookingByUserAndState(Long userId, String state) {
+    public Collection<BookingDto> findBookingByUserAndState(Long userId, BookerState state) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Пользователь с данным ID не найден");
         }
-        try {
+
             Collection<Booking> bookings;
             Sort newestFirst = Sort.by(Sort.Direction.DESC, "start");
-            BookerState bookerState = BookerState.valueOf(state.toUpperCase());
             LocalDateTime now = LocalDateTime.now();
-            bookings = switch (bookerState) {
+            bookings = switch (state) {
                 case ALL -> bookingRepository.findByBookerId(userId, newestFirst);
                 case CURRENT ->
                         bookingRepository.findByBookerIdAndStartBeforeAndEndAfter(userId, now, now, newestFirst);
@@ -110,32 +109,27 @@ public class BookingServiceImpl implements BookingService {
                 case REJECTED -> bookingRepository.findByBookerIdAndStatus(userId, Status.REJECTED, newestFirst);
             };
             return BookingMapper.toBookingDtoList(bookings);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Неверный параметр state: " + state);
-        }
     }
 
     @Override
-    public Collection<BookingDto> findBookingByOwner(Long ownerId, String state) {
+    public Collection<BookingDto> findBookingByOwner(Long ownerId, BookerState state) {
         if (!userRepository.existsById(ownerId)) {
             throw new NotFoundException("Пользователь с данным ID не найден");
         }
-        try {
+
             Collection<Booking> bookings;
             Sort newestFirst = Sort.by(Sort.Direction.DESC, "start");
-            BookerState bookerState = BookerState.valueOf(state.toUpperCase());
             LocalDateTime now = LocalDateTime.now();
-            bookings = switch (bookerState) {
+            bookings = switch (state) {
                 case ALL -> bookingRepository.findByItem_OwnerId(ownerId, newestFirst);
-                case CURRENT -> bookingRepository.findByItem_OwnerIdAndStartBeforeAndEndAfter(ownerId, now, now, newestFirst);
+                case CURRENT ->
+                        bookingRepository.findByItem_OwnerIdAndStartBeforeAndEndAfter(ownerId, now, now, newestFirst);
                 case PAST -> bookingRepository.findByItem_OwnerIdAndEndIsBefore(ownerId, now, newestFirst);
                 case FUTURE -> bookingRepository.findByItem_OwnerIdAndStartAfter(ownerId, now, newestFirst);
                 case WAITING -> bookingRepository.findByItem_OwnerIdAndStatus(ownerId, Status.WAITING, newestFirst);
                 case REJECTED -> bookingRepository.findByItem_OwnerIdAndStatus(ownerId, Status.REJECTED, newestFirst);
             };
+
             return BookingMapper.toBookingDtoList(bookings);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Неверный параметр state: " + state);
-        }
     }
 }
