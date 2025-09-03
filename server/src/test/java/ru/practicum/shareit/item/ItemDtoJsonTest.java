@@ -19,7 +19,7 @@ public class ItemDtoJsonTest {
     void testSerialize() throws Exception {
 
         var dto = new ItemDto(1L, "John Wick", "john.wick@comiccon.com",
-                true, null, null, null );
+                true, null, null, null);
 
         var result = json.write(dto);
         assertThat(result).hasJsonPath("$.id");
